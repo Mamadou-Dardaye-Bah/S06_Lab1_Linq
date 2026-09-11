@@ -37,11 +37,11 @@ namespace LinqEtSeedEF.Controllers
         {
             QuestionsViewModel questionViewModel = new QuestionsViewModel();
 
-            // ATTENTION: N'enlevez pas ces lignes de code qui semblent peut-être inutiles.
-            // Nous allons parler de loading au prochain cours et nous allons voir une comment gérer le loading efficacement.
-            // D'ici là, comprenez simplement que ces lignes load TOUTES les données des tables et les gardent en mémoire pour la durée de la requête.
-            // Normalement, on ne veut PAS travailler de cette manière!
-            //Début du code qu'il faut garder
+            // ATTENTION: N'enlevez pas ces lignes de code qui semblent peut-ï¿½tre inutiles.
+            // Nous allons parler de loading au prochain cours et nous allons voir une comment gï¿½rer le loading efficacement.
+            // D'ici lï¿½, comprenez simplement que ces lignes load TOUTES les donnï¿½es des tables et les gardent en mï¿½moire pour la durï¿½e de la requï¿½te.
+            // Normalement, on ne veut PAS travailler de cette maniï¿½re!
+            //Dï¿½but du code qu'il faut garder
             await _context.Client.ToListAsync();
             await _context.Commande.ToListAsync();
             await _context.CommandePlat.ToListAsync();
@@ -51,10 +51,10 @@ namespace LinqEtSeedEF.Controllers
 
             questionViewModel.PrixPlatLePlusCher = PrixPlatLePlusCher();
             questionViewModel.ValeurTotalDesPlats = ValeurTotalDesPlats();
-            questionViewModel.ValeurTotalDesCommandes = ValeurTotalDesCommandes("Patrick Gagné");
+            questionViewModel.ValeurTotalDesCommandes = ValeurTotalDesCommandes("Patrick Gagnï¿½");
             questionViewModel.PrixCommandeLaPlusCher = PrixCommandeLaPlusCher();
 
-            questionViewModel.VegetarienResto1 = Vegetarien("La graine du père George");
+            questionViewModel.VegetarienResto1 = Vegetarien("La graine du pï¿½re George");
             questionViewModel.VegetarienResto2 = Vegetarien("Le Bistro");
             questionViewModel.VegetarienResto3 = Vegetarien("La Belle Province");
 
@@ -66,12 +66,21 @@ namespace LinqEtSeedEF.Controllers
 
         private DecimalViewModel PrixPlatLePlusCher()
         {
-            // TODO: Écrire la logique pour trouver le prix du plat le plus cher avec une boucle
+            // TODO: ï¿½crire la logique pour trouver le prix du plat le plus cher avec une boucle
             var liste = _context.Plat.ToList();
             decimal prix = 0;
-            // TODO: Écrire la logique pour trouver le prix du plat le plus cher avec Linq
+
+            for (int i = 0; i < liste.Count; i++)
+            {
+                if (liste[i].Prix > prix)
+                    prix = liste[1].Prix;
+            }
+
+            // TODO: ï¿½crire la logique pour trouver le prix du plat le plus cher avec Linq
             // Utilisez Max
             decimal prixLinq = 0;
+
+            prixLinq = _context.Plat.Max(p => p.Prix);
 
             return new DecimalViewModel("Quel est le prix du plat le plus cher?", prix, prixLinq);
         }
@@ -80,7 +89,20 @@ namespace LinqEtSeedEF.Controllers
         {
             // TODO: Calculer la valeur totale des plats avec boucle et Linq
             // Utilisez Sum avec Linq
-            return new DecimalViewModel("Quelle est la valeur totale des plats?", 0, 0);
+
+            decimal prixLinq = 0;
+
+            prixLinq = _context.Plat.Sum(p => p.Prix);
+
+            decimal prixBoucle = 0;
+            var liste = _context.Plat.ToList();
+
+            foreach (Plat plat in liste)
+            {
+                prixBoucle += plat.Prix;
+            }
+
+            return new DecimalViewModel("Quelle est la valeur totale des plats?", prixLinq, prixBoucle);
         }
 
         private DecimalViewModel ValeurTotalDesCommandes(string nomClient)
@@ -89,42 +111,47 @@ namespace LinqEtSeedEF.Controllers
             
             // Linq: Utilisez Where et 2 fois Sum
             var listeLinq = _context.Commande.ToList();
+
+            decimal prixLinq = 0;
+
+            //prixLinq = listeLinq.Sum(p => p.);
+
             // Attention: c'est plus facile si vous faites un ToList() et faites le linq sur la liste et non pas le DbSet
             // on en parlera au prochain cours
-            // Faites votre requête Linq sur listeLinq
+            // Faites votre requï¿½te Linq sur listeLinq
 
-            return new DecimalViewModel("Quelle est la valeur totale des commandes de " + nomClient + "?", 0, 0);
+            return new DecimalViewModel("Quelle est la valeur totale des commandes de " + nomClient + "?", prixLinq, 0);
         }
 
         private DecimalViewModel PrixCommandeLaPlusCher()
         {
-            // TODO: Trouver le côut total de la commande la plus chère
+            // TODO: Trouver le cï¿½ut total de la commande la plus chï¿½re
             
             // Linq: Utilisez Sum et Max
             var listeLinq = _context.Commande.ToList();
             // Attention: c'est plus facile si vous faites un ToList() et faites le linq sur la liste et non pas le DbSet
             // on en parlera au prochain cours
-            // Faites votre requête Linq sur listeLinq
+            // Faites votre requï¿½te Linq sur listeLinq
 
-            return new DecimalViewModel("Quel est le prix de la commande la plus chère?", 0, 0);
+            return new DecimalViewModel("Quel est le prix de la commande la plus chï¿½re?", 0, 0);
         }
 
         private VegetarienViewModel Vegetarien(string nomDuResto)
         {
-            // TODO: Est-ce que le restaurant avec le nom [nomDuRest] a au moins un plat végé?
+            // TODO: Est-ce que le restaurant avec le nom [nomDuRest] a au moins un plat vï¿½gï¿½?
             bool? optionVege = null;
-            // TODO: Est-ce que le restaurant a UNIQUEMENT des plats végés?
+            // TODO: Est-ce que le restaurant a UNIQUEMENT des plats vï¿½gï¿½s?
             bool? toutVege = null;
 
-            // TODO: Même chose, mais avec Linq
+            // TODO: Mï¿½me chose, mais avec Linq
             // Utilisez Where, All et Any
             bool? optionVegeLinq = null;
             bool? toutVegeLinq = null;
 
-            return new VegetarienViewModel("Status végétarien du restaurant : " + nomDuResto, toutVege, toutVegeLinq, optionVege, optionVegeLinq);
+            return new VegetarienViewModel("Status vï¿½gï¿½tarien du restaurant : " + nomDuResto, toutVege, toutVegeLinq, optionVege, optionVegeLinq);
         }
 
-        // Méthode pratique pour utiliser List<>.Sort()
+        // Mï¿½thode pratique pour utiliser List<>.Sort()
         private int ComparerPrix(Plat platA, Plat platB)
         {
             decimal diff = platA.Prix - platB.Prix;
@@ -137,21 +164,21 @@ namespace LinqEtSeedEF.Controllers
 
         private PlatsViewModel PlatsVegeOrdeCroissantDePrix()
         {
-            // Remplir une liste avec les plats végés en ordre croissant de prix
-            // Note: Il y a une méthode ComparerPrix qui est déjà fournie au dessus
+            // Remplir une liste avec les plats vï¿½gï¿½s en ordre croissant de prix
+            // Note: Il y a une mï¿½thode ComparerPrix qui est dï¿½jï¿½ fournie au dessus
             // Remplir la liste avec une boucle
             List<Plat> plats = new List<Plat>();
             // Obtenir la liste avec Linq
             // Utilisez Where, OrderBy et ToList
             List<Plat> platsLinq = new List<Plat>();
 
-            return new PlatsViewModel("Quels sont les plats végétariens?", plats, platsLinq);
+            return new PlatsViewModel("Quels sont les plats vï¿½gï¿½tariens?", plats, platsLinq);
         }
 
         private PlatsViewModel PlatsLesPlusChersOrdeDecroissantDePrix(int nbPlats)
         {
-            // Remplir une liste avec les plats les plus chers en ordre décroissant
-            // La liste doit avoir uniquement [nbPlats] entrées
+            // Remplir une liste avec les plats les plus chers en ordre dï¿½croissant
+            // La liste doit avoir uniquement [nbPlats] entrï¿½es
             // Utilisez OrderByDescending, Take et ToList
             List<Plat> platsLesPlusChers = new List<Plat>();
             List<Plat> platsLinq = new List<Plat>();
