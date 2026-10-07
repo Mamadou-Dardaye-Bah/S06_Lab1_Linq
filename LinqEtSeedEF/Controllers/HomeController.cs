@@ -232,6 +232,13 @@ namespace LinqEtSeedEF.Controllers
                 toutVegeLinq = platsResto.All(p => p.Vegetarien);
             }
 
+            if (restaurant != null)
+            {
+                optionVegeLinq = restaurant.Plats.Any(p => p.Vegetarien);
+                toutVegeLinq = restaurant.Plats.All(p => p.Vegetarien);
+            }
+
+
             return new VegetarienViewModel("Status v�g�tarien du restaurant : " + nomDuResto, toutVege, toutVegeLinq, optionVege, optionVegeLinq);
         }
 
